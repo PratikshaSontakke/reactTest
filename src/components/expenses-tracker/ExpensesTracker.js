@@ -10,10 +10,10 @@ export const ExpensesTracker = () => {
   const [expList, setExpList] = useState([]);
   const [expense, setExpense] = useState(initialState);
   const [expPerc, setExpPerc] = useState({
-	  food: 25,
-	  travel: 25,
-	  shopping: 25,
-	  other: 25,
+	  food: 100,
+	  travel: 100,
+	  shopping: 100,
+	  other: 100,
 	});
 	
 	let newSum = 0;
@@ -28,13 +28,7 @@ export const ExpensesTracker = () => {
     newSum = newSum + totalExp[property];
   }
 
-  const handleChange = (event) => {
-    event.persist();
-    setExpense((prevState) => ({
-      ...prevState,
-      [event?.target?.name]: event?.target?.value,
-    }));
-  };
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -42,21 +36,29 @@ export const ExpensesTracker = () => {
     if (
       expense.name === "" ||
       !parseInt(expense.amount) ||
-      parseInt(expense.amount) <= 0 ||
+      parseInt(expense.amount) < 0 ||
       expense.catagory===""
     ) {
      if (expense.name==="") {
         alert("Expense Name required");
       }
-      else if (!parseInt(expense.amount) || parseInt(expense.amount) <= 0) {
+      else if (!parseInt(expense.amount) || parseInt(expense.amount) < 0) {
         alert("Expense Amount required and should be greater than 0");
       }
      else if (expense.catagory==="") {
-        alert("Select type");
+        alert("Please Choose Expense Type");
       }
     } else {
       setExpList((prevState) => [...prevState, expense]);
     }
+  };
+
+  const handleChange = (event) => {
+    event.persist();
+    setExpense((prevState) => ({
+      ...prevState,
+      [event?.target?.name]: event?.target?.value,
+    }));
   };
 
   useEffect(() => {
