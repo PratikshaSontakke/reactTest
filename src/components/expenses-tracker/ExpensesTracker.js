@@ -34,18 +34,18 @@ export const ExpensesTracker = () => {
     event.preventDefault();
 
     if (
-      expense.name === "" ||
+      !expense.name||
       !parseInt(expense.amount) ||
       parseInt(expense.amount) < 0 ||
-      expense.catagory===""
+      !expense.catagory
     ) {
-     if (expense.name==="") {
+     if (!expense.name) {
         alert("Expense Name required");
       }
-      else if (!parseInt(expense.amount) || parseInt(expense.amount) < 0) {
+      if (!parseInt(expense.amount) || parseInt(expense.amount) < 0) {
         alert("Expense Amount required and should be greater than 0");
       }
-     else if (expense.catagory==="") {
+     if (!expense.catagory) {
         alert("Please Choose Expense Type");
       }
     } else {
@@ -156,7 +156,7 @@ export const ExpensesTracker = () => {
           <p className="title">Expense List</p>
           <table>
             <thead>
-              <tr>
+              <tr >
                 <td>Sr No</td>
                 <td>Expense</td>
                 <td>Amount</td>
@@ -165,7 +165,7 @@ export const ExpensesTracker = () => {
             </thead>
             <tbody>
               {expList?.map((expense, id) => (
-                <tr key={id}>
+                <tr key={id} >
                   <td>{id + 1}</td>
                   <td>{expense?.name}</td>
                   <td>{expense?.amount}</td>
