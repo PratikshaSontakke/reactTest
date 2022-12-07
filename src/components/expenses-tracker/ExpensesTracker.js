@@ -10,27 +10,25 @@ export const ExpensesTracker = () => {
   const [expList, setExpList] = useState([]);
   const [expense, setExpense] = useState(initialState);
   const [expPerc, setExpPerc] = useState({
-	  food: 100,
-	  travel: 100,
-	  shopping: 100,
-	  other: 100,
-	});
-	
-	let newSum = 0;
-	const [totalExp, setTotalExp] = useState({
-	  Food: 0,
-	  Travel: 0,
-	  Shopping: 0,
-	  Other: 0,
-	});
-	
+    food: 100,
+    travel: 100,
+    shopping: 100,
+    other: 100,
+  });
+
+  let newSum = 0;
+  const [totalExp, setTotalExp] = useState({
+    Food: 0,
+    Travel: 0,
+    Shopping: 0,
+    Other: 0,
+  });
+
   for (const property in totalExp) {
     newSum = newSum + totalExp[property];
   }
 
-  
-
-  const handleSubmit = (event) => {
+  const handleAddExpense = (event) => {
     event.preventDefault();
 
     if (
@@ -39,13 +37,13 @@ export const ExpensesTracker = () => {
       parseInt(expense.amount) < 0 ||
       !expense.catagory
     ) {
-     if (!expense.name) {
+      if (!expense.name) {
         alert("Expense Name required");
       }
       if (!parseInt(expense.amount) || parseInt(expense.amount) < 0) {
         alert("Expense Amount required and should be greater than 0");
       }
-     if (!expense.catagory) {
+      if (!expense.catagory) {
         alert("Please Choose Expense Type");
       }
     } else {
@@ -55,20 +53,22 @@ export const ExpensesTracker = () => {
 
   const handleChange = (event) => {
     event.persist();
-    setExpense((prevState) => ({
-      ...prevState,
-      [event?.target?.name]: event?.target?.value,
-    }));
+    setExpense({ ...expense, [event?.target?.name]: event?.target?.value });
   };
 
+  const calculateTotalExp=()=>{
+	expList?.forEach((expense) => {
+		setTotalExp({
+		  ...totalExp,
+		  [expense?.catagory]:
+			parseInt(totalExp[expense?.catagory]) + parseInt(expense?.amount),
+		});
+	  });
+  }
+
   useEffect(() => {
-    const temp = expList?.forEach((expense) => {
-      setTotalExp({
-        ...totalExp,
-        [expense?.catagory]:
-          parseInt(totalExp[expense?.catagory]) + parseInt(expense?.amount),
-      });
-    });
+	calculateTotalExp()
+   
   }, [expList]);
 
   const { Food, Travel, Shopping, Other } = totalExp;
@@ -80,23 +80,19 @@ export const ExpensesTracker = () => {
       totalExp?.Shopping ||
       totalExp?.Other
     ) {
-      setExpPerc({
-        food: totalExp?.Food ? (totalExp?.Food * 100) / newSum : 0,
-        travel: totalExp?.Travel
-          ? (totalExp?.Travel * 100) / newSum
-          : 0,
-        shopping: totalExp?.Shopping
-          ? (totalExp?.Shopping * 100) / newSum
-          : 0,
-        other: totalExp?.Other ? (totalExp?.Other * 100) / newSum : 0,
-      });
+		setExpPerc({
+			food: parseInt(totalExp?.Food ? (totalExp?.Food * 100) / newSum : 0, 10),
+			travel: parseInt(totalExp?.Travel ? (totalExp?.Travel * 100) / newSum : 0,10),
+			shopping: parseInt(totalExp?.Shopping ? (totalExp?.Shopping * 100) / newSum : 0,10),
+			other: parseInt(totalExp?.Other ? (totalExp?.Other * 100) / newSum : 0, 10),
+		  });
     }
   }, [Food, Travel, Shopping, Other]);
 
   return (
     <div className="mt-50 layout-column justify-content-center align-items-center">
       <div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleAddExpense}>
           <section
             className="my-30 layout-row align-items-center justify-content-center"
             style={{ width: "1000px" }}
@@ -144,8 +140,7 @@ export const ExpensesTracker = () => {
             <button
               type="submit"
               style={{ width: "20%" }}
-              data-testid="expense-submit-button"
-            >
+              data-testid="expense-submit-button">
               Add Expense
             </button>
           </section>
@@ -165,7 +160,7 @@ export const ExpensesTracker = () => {
             </thead>
             <tbody>
               {expList?.map((expense, id) => (
-                <tr key={id} >
+                <tr key={id} data-testid={`expense-list-${id}`}>
                   <td>{id + 1}</td>
                   <td>{expense?.name}</td>
                   <td>{expense?.amount}</td>
@@ -199,7 +194,7 @@ export const ExpensesTracker = () => {
                 width: `${expPerc?.shopping}%`,
               }}
               className="lightgreen"
-            ></div>
+			  ></div>
             <div
               data-testid="expense-distribution-other"
               style={{
