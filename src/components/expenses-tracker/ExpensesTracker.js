@@ -57,7 +57,8 @@ export const ExpensesTracker = () => {
   };
 
   const calculateTotalExp=()=>{
-	expList?.forEach((expense) => {
+	//Have to assign this variable, otherwise throws error
+	const _ = expList?.forEach((expense) => {
 		setTotalExp({
 		  ...totalExp,
 		  [expense?.catagory]:
